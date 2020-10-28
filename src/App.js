@@ -10,7 +10,7 @@ import { useFormValues } from './hooks/useFormValues';
 
 function App() {
   const clientId = 'a28916be5f294c4ab1bd8bb6f1c49dd1'; // Your client id
-  const redirectUri = process.env.REDIRECTURI; // Your redirect uri
+  const redirectUri = process.env.REACT_APP_REDIRECTURI; // Your redirect uri
   const [token, setToken] = useState('');
   const scopes = 'playlist-read-private playlist-modify-private playlist-modify-public'
 
