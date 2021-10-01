@@ -24,11 +24,31 @@ const getPlaylistIds = (phaseInfo) => {
   });
 }
 
-export async function startScript(token, phaseInfo) {
-  const spotify = axios.create({
+const getSpotify = (token) => {
+  return axios.create({
     baseURL: 'https://api.spotify.com/v1',
     headers: {'Authorization': `Bearer ${token}`}
   });
+}
+
+export async function getUserPlaylists(token) {
+  const spotify = getSpotify(token);
+  let morePlaylists = true;
+  let offset = 0;
+  const playlists = [];
+  for (let x = 0; x < 10; x++) {
+    const newPlaylists = await spotify.get(`/me/playlists?limit=50&offset=${offset}`);
+    if (newPlaylists.data.items.length < 50) {
+      morePlaylists = false;
+    }
+    playlists.push(...newPlaylists.data.items)
+    offset += newPlaylists.data.items.length;
+  }
+  return playlists;
+}
+
+export async function startScript(token, phaseInfo) {
+  const spotify = getSpotify(token);
 
   const user = await spotify.get('/me');
   const userId = user.data.id;
@@ -70,7 +90,9 @@ export async function startScript(token, phaseInfo) {
 
 //TODO:
 // - Add success and failure messages
+// - Add field for name of new playlist
+// - display lists of their playlists for them to search from
 // - Change color scheme to Spotify's and maybe use their button format too
 // - Remove stepper arrows
-// - Change submit button color
-// - Deploy to Heroku
+// - Change submit button colord
+// - Ability to search playlists by name

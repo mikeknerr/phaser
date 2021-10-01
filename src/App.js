@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import FlexContainer from './FlexContainer';
 import styled from 'styled-components'
-import { startScript } from './spotify';
+import { startScript, getUserPlaylists } from './spotify';
 import SpotifyLogin from 'react-spotify-login'
 import './App.css';
 
@@ -21,6 +21,19 @@ function App() {
     playlist: '',
   };
   const [phaseInfo, setPhaseInfo] = useState([{ ...initialPhaseInfo }]);
+  const [playlists, setPlaylists] = useState([]);
+
+  const getPlaylists = async () => {
+    const playlists = await getUserPlaylists(token);
+    setPlaylists(playlists);
+    return playlists;
+  }
+
+  useEffect(() => {
+    if (token) {
+      getPlaylists();
+    }
+  }, [token]);
 
   useEffect(() => {
     const updatedPhaseInfo = phaseInfo.filter(
@@ -81,9 +94,26 @@ function App() {
   });
 
   const playlistIds = phaseInfo.map((info, index) => {
+    const menuItems = playlists.map(playlist => (
+      <MenuItem value={playlist.id}>{playlist.name}</MenuItem>
+    ))
     return (
       <td key={index}>
-        <TextInput
+      <FlexContainer flexDirection="column">
+        <SelectLabel style={{ color: 'white' }}id="playlist-label">Select Playlist</SelectLabel>
+        <StyledSelect
+          labelId={`playlist-${index}`}
+          id={`playlist-${index}`}
+          name={`playlist-${index}`}
+          value={phaseInfo[index].playlist || ''}
+          onChange={e =>
+            handleDynFieldChange('playlist', index, e.target.value)
+          }
+        >
+          {menuItems}
+        </StyledSelect>
+      </FlexContainer>
+        {/* <TextInput
           id={`playlist-${index}`}
           name={`playlist-${index}`}
           variant='filled'
@@ -93,7 +123,7 @@ function App() {
             handleDynFieldChange('playlist', index, e.target.value)
           }
           value={phaseInfo[index].playlist || ''}
-        />
+        /> */}
       </td>
     );
   });
@@ -143,7 +173,7 @@ function App() {
             </TableContainer>
             <StyledButton
               onClick={handleClick}
-              variant="outlined"
+              variant="contained"
             >
               Generate Playlist
             </StyledButton>
@@ -197,9 +227,16 @@ const TR = styled.tr`
 `;
 
 const StyledButton = styled(Button)`
-  color: white;
+  background-color: green;
+  color: green;
   & .MuiButton-outlined {
     border: 1px solid white;
+    color: green;
+    background-color: green;
+  }
+  & .MuiButton-root {
+    color: green;
+    background-color: green;
   }
 `
 
