@@ -47,7 +47,7 @@ export async function getUserPlaylists(token) {
   return playlists;
 }
 
-export async function startScript(token, phaseInfo) {
+export async function startScript(token, playlistName, phaseInfo) {
   const spotify = getSpotify(token);
 
   const user = await spotify.get('/me');
@@ -77,7 +77,7 @@ export async function startScript(token, phaseInfo) {
   }
   
   const newPlaylistDetails = JSON.stringify({
-    name: 'Test2',
+    name: playlistName || 'New Phaser Playlist',
     public: false,
   })
 
@@ -90,7 +90,6 @@ export async function startScript(token, phaseInfo) {
 
 //TODO:
 // - Add success and failure messages
-// - Add field for name of new playlist
 // - display lists of their playlists for them to search from
 // - Change color scheme to Spotify's and maybe use their button format too
 // - Remove stepper arrows

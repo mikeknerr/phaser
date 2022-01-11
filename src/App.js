@@ -58,7 +58,7 @@ function App() {
 
   const handleClick = e => {
     e.preventDefault();
-    startScript(token, phaseInfo)
+    startScript(token, values.playlistName, phaseInfo)
       .then(result => {
         setValues({});
         setPhaseInfo(initialPhaseInfo)
@@ -146,8 +146,18 @@ function App() {
         }
         {token && (
           <FormContainer flexDirection="column" alignItems="center">
-            <FlexContainer flexDirection="column">
-              <SelectLabel style={{ color: 'white' }}id="num-phases">Number of Phases</SelectLabel>
+            <ContentContainer flexDirection="column">
+              <div>
+              <TextInput
+                id="playlist-name"
+                name="playlistName"
+                label="Playlist Name"
+                value={values.playlistName}
+                onChange={handleChange}
+                variant="filled"
+                />
+                </div>
+              <SelectLabel style={{ color: 'white' }} id="num-phases">Number of Phases</SelectLabel>
               <StyledSelect
                 labelId="num-phases"
                 id="numPhases"
@@ -161,7 +171,7 @@ function App() {
                 <MenuItem value={4}>4</MenuItem>
                 <MenuItem value={5}>5</MenuItem>
               </StyledSelect>
-            </FlexContainer>
+            </ContentContainer>
             <TableContainer>
               <Table>
                 <tbody>
@@ -190,6 +200,12 @@ const FormContainer = styled(FlexContainer)`
     margin-bottom: 12px;
   }
 `
+const ContentContainer = styled(FlexContainer)`
+  > * {
+    margin-bottom: 18px;
+  }
+`
+
 const NumericInput = styled(TextField)`
   background-color: white;
 `
@@ -202,6 +218,7 @@ const SelectLabel = styled(InputLabel)`
 const TextInput = styled(TextField)`
   background-color: white;
   width: 300px;
+  margin-bottom: 24px;
 `
 
 const StyledSelect = styled(Select)`
